@@ -126,6 +126,64 @@
             color: var(--danger);
         }
 
+        /* 💬 TOOLTIP BUBBLE ENGINE (CSS Only, No JS required) */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            color: var(--primary);
+            font-weight: bold;
+            text-decoration: underline dotted;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            line-height: 1.3;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Tooltip Arrow */
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        /* Desktop Hover Trigger */
+        @media (min-width: 769px) {
+            .tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Tap / Focus Trigger */
+        .tooltip:focus .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .tips-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -158,33 +216,14 @@
 
         /* 📱 MOBILE RESPONSIVE TRANSFORMATIONS */
         @media (max-width: 768px) {
-            body { 
-                padding: 10px; 
-            }
-            
-            .container { 
-                padding: 15px; 
-            }
-            
-            h1 { 
-                font-size: 1.6rem; 
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-                margin-top: 30px;
-            }
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            h1 { font-size: 1.6rem; }
+            h2 { font-size: 1.3rem; margin-top: 30px; }
+            .seller-link { font-size: 0.95rem; }
 
-            .seller-link {
-                font-size: 0.95rem;
-            }
-
-            /* Force table to behave like stacked blocks instead of rows */
-            table, thead, tbody, th, td, tr { 
-                display: block; 
-            }
+            table, thead, tbody, th, td, tr { display: block; }
             
-            /* Hide the desktop header text completely */
             thead tr { 
                 position: absolute;
                 top: -9999px;
@@ -195,7 +234,7 @@
                 border: 1px solid #dddddd;
                 border-radius: 6px;
                 margin-bottom: 15px;
-                padding: 8px;
+                padding: 10px;
                 background: #ffffff !important;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             }
@@ -204,10 +243,25 @@
                 border: none;
                 border-bottom: 1px solid #f1f1f1; 
                 position: relative;
-                padding-left: 40% !important; 
+                padding-left: 42% !important; 
                 text-align: right;
-                font-size: 0.85rem; /* Smaller font for mobile data */
-                min-height: 24px;
+                font-size: 0.85rem;
+                min-height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+            /* REMOVED "Weed Name" Label and Left Aligned Actual Weed Name */
+            td:nth-of-type(1) {
+                border-bottom: 2px solid var(--secondary);
+                font-size: 1.1rem;
+                padding-left: 8px !important;
+                justify-content: flex-start; /* Aligns left */
+                font-weight: bold;
+                background-color: #fafdfa;
+                border-radius: 4px 4px 0 0;
+                margin-bottom: 4px;
             }
 
             td:last-child {
@@ -217,45 +271,39 @@
                 margin-top: 8px;
                 background: #fafafa;
                 border-radius: 4px;
+                display: block;
             }
             
-            /* Inject inline titles to act as labels on the left */
+            /* Left Labels for Remaining Fields */
             td:before { 
                 position: absolute;
-                top: 12px;
                 left: 12px;
-                width: 35%; 
-                padding-right: 10px; 
-                white-space: nowrap;
+                width: 38%; 
                 text-align: left;
                 font-weight: bold;
                 color: var(--primary);
                 font-size: 0.85rem;
             }
             
-            /* Column Text Labels */
-            td:nth-of-type(1):before { content: "Weed Name"; }
+            /* Labels (Skipping type 1 because it's left aligned directly) */
+            td:nth-of-type(1):before { content: ""; } 
             td:nth-of-type(2):before { content: "Best Herbicide"; }
             td:nth-of-type(3):before { content: "Safe for Lawn?"; }
-            td:nth-of-type(4):before { content: "Remarks"; text-decoration: underline; }
+            td:nth-of-type(4):before { content: ""; } /* Hide label inside remarks textblock */
 
-            td:nth-of-type(1) {
-                text-align: right;
-                font-size: 1rem; /* Keep weed name slightly larger */
+            /* Mobile Tooltip Adjustment to avoid clipping screen edges */
+            .tooltip .tooltip-text {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                right: 50%;
+                margin-left: -110px;
+                width: 220px;
             }
+            .tooltip .tooltip-text::after { display: none; } /* Hide arrow on mobile modal layout */
 
-            td:last-child:before {
-                display: none; /* Hide label on remarks block to maximize reading space */
-            }
-
-            .tips-grid { 
-                grid-template-columns: 1fr; 
-                gap: 12px;
-            }
-
-            .tip-card {
-                padding: 12px;
-            }
+            .tips-grid { grid-template-columns: 1fr; gap: 12px; }
+            .tip-card { padding: 12px; }
             .tip-card h3 { font-size: 1rem; }
             .tip-card p { font-size: 0.85rem; }
         }
@@ -287,187 +335,94 @@
             <tbody>
                 <tr>
                     <td><strong>Wood Avens</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Spray normally. Highly susceptible to Dicophar’s multi-mix.</td>
                 </tr>
                 <tr>
                     <td><strong>Herb Robert</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Soft annual weed. Dies off very quickly from a standard spray.</td>
                 </tr>
                 <tr>
                     <td><strong>Spiny Sowthistle</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Hits the deep central taproot. Spray center of the weed directly.</td>
                 </tr>
                 <tr>
                     <td><strong>Common Sowthistle</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Treat identical to spiny sowthistle.</td>
                 </tr>
                 <tr>
                     <td><strong>Fringed Willowherb</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Catch it early before it develops its wind-blown fluffy seeds.</td>
                 </tr>
                 <tr>
                     <td><strong>Fox and Cubs</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td><strong>Hairy Leaf Warning:</strong> The hairs block liquid. Spray on a warm, sunny day when the plant pores are wide open for maximum absorption.</td>
                 </tr>
                 <tr>
                     <td><strong>Creeping Buttercup</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Thoroughly wet the leaves to stop the creeping surface runners.</td>
                 </tr>
                 <tr>
                     <td><strong>Dandelion</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Destroys the central core. May take 2 weeks to fully rot the taproot.</td>
                 </tr>
                 <tr>
                     <td><strong>Cleavers (Sticky Jack)</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Spray while small. If left to climb hedges, it becomes hard to trace.</td>
                 </tr>
                 <tr>
                     <td><strong>Wavy Bittercress</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Spray quickly. If you step on it when mature, it violently shoots seeds.</td>
                 </tr>
                 <tr>
                     <td><strong>Common Daisy</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Systemic clean-out. Great for melting dense daisy mats out of lawns.</td>
                 </tr>
                 <tr>
                     <td><strong>Spear Thistle</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Fully susceptible. Spray the crown of the thistle generously.</td>
                 </tr>
                 <tr>
                     <td><strong>Smooth Cat's Ear</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Looks like a flat dandelion; treated exactly the same way.</td>
                 </tr>
                 <tr>
                     <td><strong>Thyme-leaved Speedwell</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td><strong>Tricky Waxy Leaf:</strong> Speedwell is tiny and waxy. Use a very fine mist setting on your sprayer so the droplets don't bounce off.</td>
                 </tr>
                 <tr>
                     <td><strong>Common Dog-Violet</strong></td>
-                    <td>Dicophar</td>
+                    <td><div class="tooltip" tabindex="0">Dicophar<span class="tooltip-text"><b>Dicophar (Selective)</b><br>Contains 2,4-D, MCPA, MCPP-P & Dicamba. Targets broadleaf lawn weeds without harming grass.</span></div></td>
                     <td><span class="badge badge-safe">YES</span></td>
                     <td>Easily handled via standard blanket or spot-sprayer batch.</td>
                 </tr>
                 <tr>
                     <td><strong>Orchard Grass (Cocksfoot)</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Weed Grass:</strong> Paint neat or 1-to-1 diluted Gallup directly onto blades with a brush. Do not spray or it will leave a dead circle of lawn.</td>
-                </tr>
-                <tr>
-                    <td><strong>Rough Bluegrass</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Weed Grass:</strong> Paint target blades carefully. Will ignore lawn weedkiller.</td>
-                </tr>
-                <tr>
-                    <td><strong>Perennial Ryegrass</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Weed Grass:</strong> Only target if it is clumping heavily and ruining finer lawn grass strains. Paint individual clumps.</td>
-                </tr>
-                <tr>
-                    <td><strong>Siberian Squill</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Tough Bulb:</strong> Fleshy leaves. Cut the foliage back slightly, then brush pure Gallup onto the open, bleeding stems.</td>
-                </tr>
-                <tr>
-                    <td><strong>Spanish Bluebell</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Waxy Bulb Warning:</strong> Step on and bruise the leaves first to crack the gloss coat, add a drop of Fairy Liquid to your Gallup cup, then paint.</td>
-                </tr>
-                <tr>
-                    <td><strong>Bittersweet (Nightshade)</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Woody Vine:</strong> Toxic. Paint leaves carefully, or cut low and brush Gallup straight onto the fresh stem wound.</td>
-                </tr>
-                <tr>
-                    <td><strong>Brambles</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Woody Brush:</strong> Paint leaves with a paintbrush. Avoid letting any brush drips hit your green lawn underneath.</td>
-                </tr>
-                <tr>
-                    <td><strong>Ivy</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Waxy Leaf Warning:</strong> Crush/scratch the glossy leaves with your shoe or gloved hand first, then paint Gallup over the scratch marks.</td>
-                </tr>
-                <tr>
-                    <td><strong>California Privet</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Stump Treatment:</strong> Cut down to a flat stump. Paint 100% pure undiluted Gallup onto the fresh cut ring within 15 minutes.</td>
-                </tr>
-                <tr>
-                    <td><strong>Sweet Mock-Orange</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Stump Treatment:</strong> Cut down and paint raw wood with pure Gallup.</td>
-                </tr>
-                <tr>
-                    <td><strong>Elder</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Stump Treatment:</strong> Cut down. For thick stumps, drill 2-3 downward holes into the top outer ring and pour neat Gallup directly inside.</td>
-                </tr>
-                <tr>
-                    <td><strong>Franchet's Cotoneaster</strong></td>
-                    <td>Gallup XL</td>
-                    <td><span class="badge badge-danger">NO</span></td>
-                    <td><strong>Woody Shrub:</strong> Glossy leaves. Best killed by cutting it down to the base and painting the raw stump immediately.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <h2>3 Quick Things to Remember for Application</h2>
-    <div class="tips-grid">
-        <div class="tip-card">
-            <h3>1. The Soap Trick</h3>
-            <p>When mixing your cup of Gallup for Ivy, Brambles, and Spanish Bluebells, adding a single drop of Fairy Liquid is critical. It breaks the liquid surface tension so the chemical sticks cleanly to waxy coats instead of rolling off harmlessly.</p>
-        </div>
-        <div class="tip-card">
-            <h3>2. Sprayer Math for Dicophar</h3>
-            <p>To fill your pressure sprayer for general broadleaf weeds on the turf, mix exactly 7.5ml of Dicophar concentrate per 1 Litre of water. This gives you maximum strength while keeping the grass perfectly safe.</p>
-        </div>
-        <div class="tip-card">
-            <h3>3. The "Fresh Cut" Rule</h3>
-            <p>For tree stumps and woody shrubs (Elder, Privet, Mock-Orange), you must paint pure, undiluted Gallup onto the cut wood surface within 15 minutes of sawing it down. Waiting longer allows the tree sap to seal the wound, locking out the chemical.</p>
-        </div>
-    </div>
-
-</div>
-
-</body>
-</html>
+                    <td><div class="tooltip" tabindex="0">Gallup XL<span class="tooltip-text"><b>Gallup XL (Total Killer)</b><br>Contains 360g/
